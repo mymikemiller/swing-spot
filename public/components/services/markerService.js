@@ -4,6 +4,10 @@ app.service("MarkerService", [function () {
     this.markers = [];
     var self = this;
 
+    this.addMarkers = function(spots) {
+
+    };
+
     this.addMarker = function (coord, map, clickCallback) {
         console.log("Adding marker at " + JSON.stringify(coord));
         var marker = new google.maps.Marker({

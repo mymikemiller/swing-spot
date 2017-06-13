@@ -7,16 +7,18 @@
 <h3>Swing Spot, the Swing Set Finder</h3>
 <h2 ng-show="addSpotMode">You are in Add Swing Set mode.</h2>
 <h2 ng-show="deleteSpotMode">You are in Delete Swing Set mode.</h2>
-<div ng-repeat="spot in spots">
-    {{spot}}
-</div>
+<!--<div ng-repeat="spot in spots">-->
+    <!--{{spot}}-->
+<!--</div>-->
 
 
 <div id="wrapper">
     <div id="google_map">
         <div map-lazy-load="https://maps.google.com/maps/api/js"
              map-lazy-load-params="{{googleMapsUrl}}">
-            <ng-map center="41,-87" zoom="3"></ng-map>
+            <ng-map center="41,-87" zoom="3">
+                <marker ng-repeat="spot in spots" position="[{{spot.coordinate.latitude}},{{spot.coordinate.longitude}}]"></marker>
+            </ng-map>
         </div>
     </div>
 
@@ -35,7 +37,8 @@
 
 <script src="geolocation-marker.js"></script>
 <script src="app.js"></script>
-<script src="components/spotService.js"></script>
-<script src="components/markerService.js"></script>
+<script src="components/services/spotService.js"></script>
+<script src="components/services/markerService.js"></script>
+<script src="components/services/mapService.js"></script>
 </body>
 </html>

@@ -1,8 +1,8 @@
 var app = angular.module("swingSpotApp", ['ngMap']);
 //var scope;
 
-app.controller("MainController", ["$scope", "SpotService", "MarkerService", 'NgMap',
-    function ($scope, SpotService, MarkerService, NgMap) {
+app.controller("MainController", ["$scope", "SpotService", "MarkerService", "MapService",
+    function ($scope, SpotService, MarkerService, MapService) {
 
         $scope.googleMapsUrl = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDK2NirNh6q_wPXkoT91QDSvRJ0PbogzLE";
 
@@ -15,82 +15,83 @@ app.controller("MainController", ["$scope", "SpotService", "MarkerService", 'NgM
         $scope.clickDeleteSpotModeButton = function () {
             $scope.deleteSpotMode = !$scope.deleteSpotMode;
             $scope.addSpotMode = false;
-            // console.log("delete mode");
         };
 
-        NgMap.getMap().then(function (map) {
+        MapService.getMap()
+            .then(function (map) {
 
-            // Populate the page after loading the map
-            // console.log("calling getSpots");
-            SpotService.getSpots().then(function (spots) {
-                // console.log("got spots: ");
-                // console.log(spots);
-                spots.forEach(function (spot) {
-                    // console.log(JSON.stringify("getSpots got spot: " + JSON.stringify(spot)));
-                    MarkerService.addMarker(spot.coordinate, map, function (marker) {
-
-                        // console.log("clicked marker " + marker);
-                        if (scope.deleteSpotMode) {
-                            // console.log("removing marker " + marker);
-                            MarkerService.removeMarker(marker);
-                            //SpotService.deleteSpot(...)
-                            //scope.deleteSpot()
-                        }
-                    });
-                });
+                // Populate the page after loading the map
+                return SpotService.getSpots()
+            })
+            .then(function (spots) {
+                $scope.spots = spots;
             });
+        // spots.forEach(function (spot) {
+        // console.log(JSON.stringify("getSpots got spot: " + JSON.stringify(spot)));
+        // MarkerService.addMarker(spot.coordinate, map, function (marker) {
+        //
+        //     // console.log("clicked marker " + marker);
+        //     if (scope.deleteSpotMode) {
+        //         // console.log("removing marker " + marker);
+        //         MarkerService.removeMarker(marker);
+        //         //SpotService.deleteSpot(...)
+        //         //scope.deleteSpot()
+        //     }
+        // });
+        // });
+        // });
 
-            // Do the geolocation for the blue dot
-            var GeoMarker = new GeolocationMarker(map);
-
-            infoWindow = new google.maps.InfoWindow;
-
-            // Try HTML5 geolocation.
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    var pos = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
-
-                    map.setCenter(pos);
-
-                    var closestMarker = MarkerService.getClosestMarkerTo(pos);
-
-                    var bounds = new google.maps.LatLngBounds();
-                    //for (var i = 0; i < markerManager.markers.length; i++) {
-                    bounds.extend(closestMarker.position);
-                    bounds.extend(pos);
-                    //}
-                    map.fitBounds(bounds);
-
-                }, function () {
-                    handleLocationError(true, infoWindow, map.getCenter());
-                });
-            } else {
-                // Browser doesn't support Geolocation
-                handleLocationError(false, infoWindow, map.getCenter());
-            }
-
-
-            google.maps.event.addListener(map, "click", function (e) {
-
-                if ($scope.addSpotMode) {
-                    console.log("clicked " + JSON.stringify(loc));
-
-                    var spot = {
-                        coordinate: {
-                            latitude: parseFloat(e.latLng.lat().toFixed(6)),
-                            longitude: parseFloat(e.latLng.lng().toFixed(6))
-                        },
-                        name: ""
-                    };
-                    MarkerService.addMarker(spot.coordinate, map);
-
-                    $scope.addOrUpdateSpot(spot);
-                }
-            });
-        });
+        // Do the geolocation for the blue dot
+        // var GeoMarker = new GeolocationMarker(map);
+        //
+        // infoWindow = new google.maps.InfoWindow;
+        //
+        // // Try HTML5 geolocation.
+        // if (navigator.geolocation) {
+        //     navigator.geolocation.getCurrentPosition(function (position) {
+        //         var pos = {
+        //             lat: position.coords.latitude,
+        //             lng: position.coords.longitude
+        //         };
+        //
+        //         map.setCenter(pos);
+        //
+        //         var closestMarker = MarkerService.getClosestMarkerTo(pos);
+        //
+        //         var bounds = new google.maps.LatLngBounds();
+        //         //for (var i = 0; i < markerManager.markers.length; i++) {
+        //         bounds.extend(closestMarker.position);
+        //         bounds.extend(pos);
+        //         //}
+        //         map.fitBounds(bounds);
+        //
+        //     }, function () {
+        //         handleLocationError(true, infoWindow, map.getCenter());
+        //     });
+        // } else {
+        //     // Browser doesn't support Geolocation
+        //     handleLocationError(false, infoWindow, map.getCenter());
+        // }
+        //
+        //
+        // google.maps.event.addListener(map, "click", function (e) {
+        //
+        //     if ($scope.addSpotMode) {
+        //         console.log("clicked " + JSON.stringify(loc));
+        //
+        //         var spot = {
+        //             coordinate: {
+        //                 latitude: parseFloat(e.latLng.lat().toFixed(6)),
+        //                 longitude: parseFloat(e.latLng.lng().toFixed(6))
+        //             },
+        //             name: ""
+        //         };
+        //         MarkerService.addMarker(spot.coordinate, map);
+        //
+        //         $scope.addOrUpdateSpot(spot);
+        //     }
+        // });
+        // });
 
         $scope.deleteSpot = function (spot) {
             console.log("deleting spot");
@@ -127,7 +128,8 @@ app.controller("MainController", ["$scope", "SpotService", "MarkerService", 'NgM
         }
 
     }
-]);
+])
+;
 
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
