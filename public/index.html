@@ -27,7 +27,8 @@
 
                 <info-window id="marker-iw">
                     <div ng-non-bindable="">
-                        hello
+                        {{spot._id}}
+                        <button id="deleteSpot" type="button" ng-click="clickDelete(spot)">Delete This Spot</button>
                     </div>
                 </info-window>
 
@@ -37,8 +38,8 @@
 
     <div id="over_map">
         <div id="floating-panel">
-            <input ng-click="clickAddSpotModeButton();" type=button value="Add Swing Set">
-            <input ng-click="clickDeleteSpotModeButton();" type=button value="Delete a Swing Set">
+            <input ng-click="clickAddSpotModeButton();" type=button value="Add a Swing Set"
+                   ng-class="{ 'modeEnabled': addSpotMode, 'modeDisabled': !addSpotMode }">
         </div>
     </div>
 </div>

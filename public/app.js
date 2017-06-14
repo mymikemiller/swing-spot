@@ -12,14 +12,7 @@ app.controller("MainController", ["$scope", "SpotService", "MapService",
         $scope.addSpotMode = false;
         $scope.clickAddSpotModeButton = function () {
             $scope.addSpotMode = !$scope.addSpotMode;
-            $scope.deleteSpotMode = false;
         };
-        $scope.deleteSpotMode = false;
-        $scope.clickDeleteSpotModeButton = function () {
-            $scope.deleteSpotMode = !$scope.deleteSpotMode;
-            $scope.addSpotMode = false;
-        };
-
 
         MapService.getMap()
             .then(function (map) {
@@ -47,14 +40,16 @@ app.controller("MainController", ["$scope", "SpotService", "MapService",
         };
 
         $scope.markerClicked = function (e, spot) {
-            // if ($scope.deleteSpotMode) {
-            //     $scope.deleteSpot(spot);
-            // }
-            console.log(e);
-            console.log(spot);
             $scope.spot = spot;
             this.map.showInfoWindow('marker-iw', spot._id);
         }
+
+        $scope.clickDelete = function (spot) {
+            $scope.deleteSpot(spot);
+        }
+
+
+        // Interact with the server
 
         $scope.deleteSpot = function (spot) {
             console.log("deleting spot");
