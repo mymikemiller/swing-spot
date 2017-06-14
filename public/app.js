@@ -20,6 +20,7 @@ app.controller("MainController", ["$scope", "SpotService", "MapService",
             $scope.addSpotMode = false;
         };
 
+
         MapService.getMap()
             .then(function (map) {
                 this.map = map;
