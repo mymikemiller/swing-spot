@@ -1,9 +1,12 @@
-var app = angular.module("swingSpotApp", ['ngMap']);
+var app = angular.module("swingSpotApp", ['ngMap', "ngGeolocation"]);
 //var scope;
 
-app.controller("MainController", ["$scope", "SpotService", "MarkerService", "MapService",
-    function ($scope, SpotService, MarkerService, MapService) {
+app.controller("MainController", ["$scope", "SpotService", "MapService",
+    function ($scope, SpotService, MapService) {
 
+        // If you need another controller and want to keep the spots in the service
+        // $scope.spots = SpotService.spots;
+        var self = this;
         $scope.googleMapsUrl = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDK2NirNh6q_wPXkoT91QDSvRJ0PbogzLE";
 
         $scope.addSpotMode = false;
@@ -19,79 +22,38 @@ app.controller("MainController", ["$scope", "SpotService", "MarkerService", "Map
 
         MapService.getMap()
             .then(function (map) {
-
+                this.map = map;
                 // Populate the page after loading the map
                 return SpotService.getSpots()
             })
             .then(function (spots) {
                 $scope.spots = spots;
+                MapService.setUpGeolocationMarker(spots);
             });
-        // spots.forEach(function (spot) {
-        // console.log(JSON.stringify("getSpots got spot: " + JSON.stringify(spot)));
-        // MarkerService.addMarker(spot.coordinate, map, function (marker) {
-        //
-        //     // console.log("clicked marker " + marker);
-        //     if (scope.deleteSpotMode) {
-        //         // console.log("removing marker " + marker);
-        //         MarkerService.removeMarker(marker);
-        //         //SpotService.deleteSpot(...)
-        //         //scope.deleteSpot()
-        //     }
-        // });
-        // });
-        // });
 
-        // Do the geolocation for the blue dot
-        // var GeoMarker = new GeolocationMarker(map);
-        //
-        // infoWindow = new google.maps.InfoWindow;
-        //
-        // // Try HTML5 geolocation.
-        // if (navigator.geolocation) {
-        //     navigator.geolocation.getCurrentPosition(function (position) {
-        //         var pos = {
-        //             lat: position.coords.latitude,
-        //             lng: position.coords.longitude
-        //         };
-        //
-        //         map.setCenter(pos);
-        //
-        //         var closestMarker = MarkerService.getClosestMarkerTo(pos);
-        //
-        //         var bounds = new google.maps.LatLngBounds();
-        //         //for (var i = 0; i < markerManager.markers.length; i++) {
-        //         bounds.extend(closestMarker.position);
-        //         bounds.extend(pos);
-        //         //}
-        //         map.fitBounds(bounds);
-        //
-        //     }, function () {
-        //         handleLocationError(true, infoWindow, map.getCenter());
-        //     });
-        // } else {
-        //     // Browser doesn't support Geolocation
-        //     handleLocationError(false, infoWindow, map.getCenter());
-        // }
-        //
-        //
-        // google.maps.event.addListener(map, "click", function (e) {
-        //
-        //     if ($scope.addSpotMode) {
-        //         console.log("clicked " + JSON.stringify(loc));
-        //
-        //         var spot = {
-        //             coordinate: {
-        //                 latitude: parseFloat(e.latLng.lat().toFixed(6)),
-        //                 longitude: parseFloat(e.latLng.lng().toFixed(6))
-        //             },
-        //             name: ""
-        //         };
-        //         MarkerService.addMarker(spot.coordinate, map);
-        //
-        //         $scope.addOrUpdateSpot(spot);
-        //     }
-        // });
-        // });
+        $scope.mapClicked = function (e) {
+            if ($scope.addSpotMode) {
+                var spot = {
+                    coordinate: {
+                        latitude: parseFloat(e.latLng.lat().toFixed(6)),
+                        longitude: parseFloat(e.latLng.lng().toFixed(6))
+                    },
+                    name: ""
+                };
+
+                $scope.addOrUpdateSpot(spot);
+            }
+        };
+
+        $scope.markerClicked = function (e, spot) {
+            // if ($scope.deleteSpotMode) {
+            //     $scope.deleteSpot(spot);
+            // }
+            console.log(e);
+            console.log(spot);
+            $scope.spot = spot;
+            this.map.showInfoWindow('marker-iw', spot._id);
+        }
 
         $scope.deleteSpot = function (spot) {
             console.log("deleting spot");
@@ -119,24 +81,14 @@ app.controller("MainController", ["$scope", "SpotService", "MarkerService", "Map
                     }
                 });
             } else {
-                console.log("add spot");
                 // Add the spot
                 SpotService.addSpot(spot).then(function (response) {
-                    console.log("spot added!");
+                    $scope.spots.push(response.data);
                 });
             }
-        }
-
-    }
-])
-;
+        };
+    }]);
 
 
-function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-    infoWindow.setPosition(pos);
-    infoWindow.setContent(browserHasGeolocation ?
-        'Error: The Geolocation service failed.' :
-        'Error: Your browser doesn\'t support geolocation.');
-    infoWindow.open(map);
-}
+
 
