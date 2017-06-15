@@ -52,32 +52,27 @@ app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDia
         };
 
         $scope.clickEdit = function (spot) {
-            $scope.deleteSpot(spot);
+            $scope.showAddDialog(spot).then(function (spot) {
+                if (spot) {
+                    $scope.addOrUpdateSpot(spot);
+                }
+            });
         };
 
-        $scope.showAddDialog = function (ev) {
+        $scope.showAddDialog = function (spot) {
+            console.log("Showing dialog. Spot = " + JSON.stringify(spot));
             return $mdDialog.show({
+                locals: {dataToPass: spot},
                 controller: DialogController,
                 templateUrl: 'addDialog.tmpl.html',
                 parent: angular.element(document.body),
-                targetEvent: ev,
                 clickOutsideToClose: true,
                 fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
             })
         };
 
-        $scope.showEditDialog = function (ev) {
-            return $mdDialog.show({
-                controller: DialogController,
-                templateUrl: 'addDialog.tmpl.html',
-                parent: angular.element(document.body),
-                targetEvent: ev,
-                clickOutsideToClose: true,
-                fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
-            })
-        };
-
-        function DialogController($scope, $mdDialog) {
+        function DialogController($scope, $mdDialog, dataToPass) {
+            $scope.spot = dataToPass;
             $scope.hide = function () {
                 $mdDialog.hide();
             };
@@ -91,9 +86,7 @@ app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDia
             };
         }
 
-
         // Interact with the server
-
         $scope.deleteSpot = function (spot) {
             console.log("deleting spot");
             SpotService.deleteSpot(spot._id).then(function (response) {

@@ -32,7 +32,7 @@ spotRoutes.route("/:id")
         Spot.findByIdAndUpdate(req.params.id, req.body, {new: true}, function (err, updatedSpot) {
             if (err) return res.status(500).send(err);
             console.log("sending after update " + JSON.stringify(updatedSpot));
-            return res.send(updatedSpots);
+            return res.send(updatedSpot);
         })
     })
     .delete(function (req, res) {

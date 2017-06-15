@@ -31,7 +31,7 @@
                 Cancel
             </md-button>
             <md-button ng-click="result(spot)">
-                Add Swing Set
+                {{spot == undefined ? "Add" : "Edit"}} Swing Set
             </md-button>
         </md-dialog-actions>
     </form>
