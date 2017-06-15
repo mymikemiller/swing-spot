@@ -1,0 +1,38 @@
+<md-dialog aria-label="Mango (Fruit)">
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Enter Swing Set Details</h2>
+                <span flex></span>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <md-input-container>
+                    <label>Name</label>
+                    <input ng-model="spot.name">
+                </md-input-container>
+
+                <md-input-container>
+                    <label>Number of Swings</label>
+                    <input ng-model="spot.numSwings" type="number">
+                </md-input-container>
+            </div>
+
+            <md-button href="#" target="_blank" md-autofocus>
+                Add a picture
+            </md-button>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button ng-click="cancel()">
+                Cancel
+            </md-button>
+            <md-button ng-click="result(spot)">
+                Add Swing Set
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

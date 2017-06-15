@@ -1,8 +1,8 @@
-var app = angular.module("swingSpotApp", ['ngMap', "ngGeolocation"]);
+var app = angular.module("swingSpotApp", ['ngMap', "ngGeolocation", "ngMaterial"]);
 //var scope;
 
-app.controller("MainController", ["$scope", "SpotService", "MapService",
-    function ($scope, SpotService, MapService) {
+app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDialog",
+    function ($scope, SpotService, MapService, $mdDialog) {
 
         // If you need another controller and want to keep the spots in the service
         // $scope.spots = SpotService.spots;
@@ -27,25 +27,68 @@ app.controller("MainController", ["$scope", "SpotService", "MapService",
 
         $scope.mapClicked = function (e) {
             if ($scope.addSpotMode) {
-                var spot = {
-                    coordinate: {
-                        latitude: parseFloat(e.latLng.lat().toFixed(6)),
-                        longitude: parseFloat(e.latLng.lng().toFixed(6))
-                    },
-                    name: ""
-                };
 
-                $scope.addOrUpdateSpot(spot);
+                console.log("click during add: " + e);
+
+                $scope.showAddDialog().then(function (spot) {
+                    if (spot) {
+                        spot.coordinate = {
+                            latitude: parseFloat(e.latLng.lat().toFixed(6)),
+                            longitude: parseFloat(e.latLng.lng().toFixed(6))
+                        }
+                        $scope.addOrUpdateSpot(spot);
+                    }
+                });
             }
         };
 
         $scope.markerClicked = function (e, spot) {
             $scope.spot = spot;
             this.map.showInfoWindow('marker-iw', spot._id);
-        }
+        };
 
         $scope.clickDelete = function (spot) {
             $scope.deleteSpot(spot);
+        };
+
+        $scope.clickEdit = function (spot) {
+            $scope.deleteSpot(spot);
+        };
+
+        $scope.showAddDialog = function (ev) {
+            return $mdDialog.show({
+                controller: DialogController,
+                templateUrl: 'addDialog.tmpl.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose: true,
+                fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
+            })
+        };
+
+        $scope.showEditDialog = function (ev) {
+            return $mdDialog.show({
+                controller: DialogController,
+                templateUrl: 'addDialog.tmpl.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose: true,
+                fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
+            })
+        };
+
+        function DialogController($scope, $mdDialog) {
+            $scope.hide = function () {
+                $mdDialog.hide();
+            };
+
+            $scope.cancel = function () {
+                $mdDialog.cancel();
+            };
+
+            $scope.result = function (spot) {
+                $mdDialog.hide(spot);
+            };
         }
 
 

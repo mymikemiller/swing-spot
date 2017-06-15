@@ -22,10 +22,10 @@ app.service("SpotService", ["$http", function ($http) {
         })
     };
     this.addSpot = function (spot) {
-        console.log("adding " + JSON.stringify(spot));
+        // console.log("adding " + JSON.stringify(spot));
         return $http.post('/spots/', spot).then(function (response) {
-                console.log("success");
-                console.log(response);
+                // console.log("success");
+                // console.log(response);
                 return response;
             },
             function (response) {

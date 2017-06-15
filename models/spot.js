@@ -5,7 +5,8 @@ var spotSchema = new mongoose.Schema({
         latitude: Number,
         longitude: Number
     },
-    name: String
+    name: String,
+    numSwings: Number
 });
 
 module.exports = mongoose.model("Spot", spotSchema);
