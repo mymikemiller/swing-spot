@@ -27,14 +27,6 @@ app.service("SpotService", ["$http", "Upload", function ($http, Upload) {
             url: "/spots",
             data: data
         });
-        //     return $http.post('/spots/', spot).then(function (response) {
-        //             return response;
-        //         },
-        //         function (response) {
-        //             console.log("failure");
-        //             console.log(response);
-        //             return response;
-        //         })
     };
     this.updateSpot = function (data) {
         console.log(data);
@@ -43,16 +35,5 @@ app.service("SpotService", ["$http", "Upload", function ($http, Upload) {
             url: "/spots/" + data.spot._id,
             data: data
         });
-        // console.log("updating now " + JSON.stringify(spot));
-        // return $http.put('/spots/' + spot._id, spot).then(function (response) {
-        //         console.log("success");
-        //         console.log(response);
-        //         return response;
-        //     },
-        //     function (response) {
-        //         console.log("failure");
-        //         console.log(response);
-        //         return response;
-        //     })
     }
 }]);

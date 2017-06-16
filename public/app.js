@@ -51,7 +51,6 @@ app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDia
                     return SpotService.updateSpot(data)
                 })
                 .then(function (response) {
-                    // console.log("update response: " + JSON.stringify(response.data));
                     for (var i = 0; i < $scope.spots.length; i++) {
                         if ($scope.spots[i]._id == response.data._id) {
                             $scope.spots.splice(i, 1, response.data);
@@ -96,12 +95,6 @@ app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDia
                 console.log(spot);
                 $mdDialog.hide({file: file, spot: spot});
             };
-
-            // $scope.submitImage = function (file, spot) {
-            //     upload(file, spot);
-            // };
-
-
         }
 
         // Interact with the server
@@ -116,27 +109,6 @@ app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDia
                 }
             });
         };
-
-        // $scope.addOrUpdateSpot = function (spot) {
-        //     if (spot.hasOwnProperty('_id') && spot._id.length > 0) {
-        //         console.log("update spot: " + JSON.stringify(spot));
-        //         // Update the spot
-        //         SpotService.updateSpot(spot).then(function (response) {
-        //             console.log("update response: " + JSON.stringify(response.data));
-        //             for (var i = 0; i < $scope.spots.length; i++) {
-        //                 if ($scope.spots[i]._id == response.data._id) {
-        //                     $scope.spots.splice(i, 1, response.data);
-        //                     break;
-        //                 }
-        //             }
-        //         });
-        //     } else {
-        //         // Add the spot
-        //         SpotService.addSpot(spot).then(function (response) {
-        //             $scope.spots.push(response.data);
-        //         });
-        //     }
-        // };
     }]);
 
 
