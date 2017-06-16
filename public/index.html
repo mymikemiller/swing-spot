@@ -18,7 +18,7 @@
             <ng-map center="41,-87" zoom="3" on-click="mapClicked()" default-style="true">
 
                 <marker id="{{spot._id}}"
-                        ng-repeat="spot in spots"
+                        ng-repeat="spot in spots track by spot._id"
                         position="[{{spot.coordinate.latitude}},{{spot.coordinate.longitude}}]"
                         on-click='markerClicked(spot)'>
                 </marker>

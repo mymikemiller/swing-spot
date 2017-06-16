@@ -30,16 +30,35 @@ app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDia
 
                 console.log("click during add: " + e);
 
-                $scope.showAddDialog().then(function (data) {
-                    if (data.spot) {
+                $scope.showAddDialog()
+                    .then(function (data) {
                         data.spot.coordinate = {
                             latitude: parseFloat(e.latLng.lat().toFixed(6)),
                             longitude: parseFloat(e.latLng.lng().toFixed(6))
                         }
-                        $scope.addOrUpdateSpot(data.spot);
+                        return SpotService.addSpot(data)
+                    })
+                    .then(function (response) {
+                        $scope.spots.push(response.data);
+                    });
+            }
+        };
+
+        $scope.clickEdit = function (spot) {
+            $scope.showAddDialog(spot)
+                .then(function (data) {
+                    console.log(data);
+                    return SpotService.updateSpot(data)
+                })
+                .then(function (response) {
+                    // console.log("update response: " + JSON.stringify(response.data));
+                    for (var i = 0; i < $scope.spots.length; i++) {
+                        if ($scope.spots[i]._id == response.data._id) {
+                            $scope.spots.splice(i, 1, response.data);
+                            break;
+                        }
                     }
                 });
-            }
         };
 
         $scope.markerClicked = function (e, spot) {
@@ -49,35 +68,6 @@ app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDia
 
         $scope.clickDelete = function (spot) {
             $scope.deleteSpot(spot);
-        };
-
-        function upload(file, spot) {
-            var url = "";
-            var method = "";
-            if (spot._id) {
-                url = "/spots/" + spot._id;
-                method = "PUT";
-            } else {
-                url = "/spots/";
-                method = "POST";
-            }
-            Upload.upload({
-                method: method,
-                url: url,
-                data: {file: file, info: spot}
-            }).then(function (response) {
-                $scope.spots.push(response.data);
-            });
-        }
-
-        $scope.clickEdit = function (spot) {
-            $scope.showAddDialog(spot).then(function (data) {
-                if (data.file) {
-                    upload(data.file, data.spot);
-                } else {
-                    $scope.addOrUpdateSpot(data.spot);
-                }
-            });
         };
 
         $scope.showAddDialog = function (spot) {
@@ -102,7 +92,8 @@ app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDia
                 $mdDialog.cancel();
             };
 
-            $scope.result = function (file, spot) {
+            $scope.add = function (file, spot) {
+                console.log(spot);
                 $mdDialog.hide({file: file, spot: spot});
             };
 
@@ -126,26 +117,26 @@ app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDia
             });
         };
 
-        $scope.addOrUpdateSpot = function (spot) {
-            if (spot.hasOwnProperty('_id') && spot._id.length > 0) {
-                console.log("update spot: " + JSON.stringify(spot));
-                // Update the spot
-                SpotService.updateSpot(spot).then(function (response) {
-                    console.log("update response: " + JSON.stringify(response.data));
-                    for (var i = 0; i < $scope.spots.length; i++) {
-                        if ($scope.spots[i]._id == response.data._id) {
-                            $scope.spots.splice(i, 1, response.data);
-                            break;
-                        }
-                    }
-                });
-            } else {
-                // Add the spot
-                SpotService.addSpot(spot).then(function (response) {
-                    $scope.spots.push(response.data);
-                });
-            }
-        };
+        // $scope.addOrUpdateSpot = function (spot) {
+        //     if (spot.hasOwnProperty('_id') && spot._id.length > 0) {
+        //         console.log("update spot: " + JSON.stringify(spot));
+        //         // Update the spot
+        //         SpotService.updateSpot(spot).then(function (response) {
+        //             console.log("update response: " + JSON.stringify(response.data));
+        //             for (var i = 0; i < $scope.spots.length; i++) {
+        //                 if ($scope.spots[i]._id == response.data._id) {
+        //                     $scope.spots.splice(i, 1, response.data);
+        //                     break;
+        //                 }
+        //             }
+        //         });
+        //     } else {
+        //         // Add the spot
+        //         SpotService.addSpot(spot).then(function (response) {
+        //             $scope.spots.push(response.data);
+        //         });
+        //     }
+        // };
     }]);
 
 

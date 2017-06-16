@@ -18,6 +18,7 @@ var storage = multer.diskStorage({ //multers disk storage settings
 });
 
 var upload = multer({storage: storage}).single("file");
+// var upload = multer({storage: storage}).any();
 
 
 spotRoutes.route("/")
@@ -29,15 +30,13 @@ spotRoutes.route("/")
         });
     })
     .post(upload, function (req, res) {
-        console.log(req.file);
-        if (req.file) {
-            req.body.image = req.file.filename;
-        } else {
-            req.body.image = "default.png";
-        }
-        console.log("put Spots");
         console.log(req.body);
-        var spot = new Spot(req.body);
+        if (req.file) {
+            req.body.spot.image = req.file.filename;
+        } else {
+            req.body.spot.image = "default.png";
+        }
+        var spot = new Spot(req.body.spot);
         spot.save(function (err, newSpot) {
             if (err) return res.status(500).send(err);
             return res.status(201).send(newSpot);
@@ -51,13 +50,16 @@ spotRoutes.route("/:id")
             return res.send(spot);
         });
     })
-    .put(function (req, res) {
+    .put(upload, function (req, res) {
         if (req.file) {
-            req.body.image = req.file.filename;
+            req.body.spot.image = req.file.filename;
         }
-        Spot.findByIdAndUpdate(req.params.id, req.body, {new: true}, function (err, updatedSpot) {
+        console.log("req.body.spot:");
+        console.log(typeof req.body.spot);
+        Spot.findByIdAndUpdate(req.params.id, req.body.spot, {new: true}, function (err, updatedSpot) {
+            if (err) console.log(err);
             if (err) return res.status(500).send(err);
-            console.log("sending after update " + JSON.stringify(updatedSpot));
+            // console.log("sending after update " + JSON.stringify(updatedSpot));
             return res.send(updatedSpot);
         })
     })
