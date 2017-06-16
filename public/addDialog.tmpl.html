@@ -23,6 +23,19 @@
             <md-button href="#" target="_blank" md-autofocus>
                 Add a picture
             </md-button>
+
+            <label for="image">Image: </label>
+            <input type="file"
+                   ngf-select
+                   ng-model="file"
+                   name="file"
+                   id="image">
+            <!--<button type="submit" ng-click="submitImage(file, spot)" class="btn btn-primary">Submit</button>-->
+            <img ngf-thumbnail="file" class="thumbnail" style="max-width: 500px; height: auto">
+
+            <img ng-src="{{spot.image}}" alt="{{user.name}}">
+
+
         </md-dialog-content>
 
         <md-dialog-actions layout="row">
@@ -30,7 +43,7 @@
             <md-button ng-click="cancel()">
                 Cancel
             </md-button>
-            <md-button ng-click="result(spot)">
+            <md-button ng-click="result(file, spot)">
                 {{spot == undefined ? "Add" : "Edit"}} Swing Set
             </md-button>
         </md-dialog-actions>

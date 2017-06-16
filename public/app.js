@@ -1,8 +1,8 @@
-var app = angular.module("swingSpotApp", ['ngMap', "ngGeolocation", "ngMaterial"]);
+var app = angular.module("swingSpotApp", ['ngMap', "ngGeolocation", "ngMaterial", "ngFileUpload"]);
 //var scope;
 
-app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDialog",
-    function ($scope, SpotService, MapService, $mdDialog) {
+app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDialog", "Upload",
+    function ($scope, SpotService, MapService, $mdDialog, Upload) {
 
         // If you need another controller and want to keep the spots in the service
         // $scope.spots = SpotService.spots;
@@ -30,13 +30,13 @@ app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDia
 
                 console.log("click during add: " + e);
 
-                $scope.showAddDialog().then(function (spot) {
-                    if (spot) {
-                        spot.coordinate = {
+                $scope.showAddDialog().then(function (data) {
+                    if (data.spot) {
+                        data.spot.coordinate = {
                             latitude: parseFloat(e.latLng.lat().toFixed(6)),
                             longitude: parseFloat(e.latLng.lng().toFixed(6))
                         }
-                        $scope.addOrUpdateSpot(spot);
+                        $scope.addOrUpdateSpot(data.spot);
                     }
                 });
             }
@@ -51,10 +51,31 @@ app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDia
             $scope.deleteSpot(spot);
         };
 
+        function upload(file, spot) {
+            var url = "";
+            var method = "";
+            if (spot._id) {
+                url = "/spots/" + spot._id;
+                method = "PUT";
+            } else {
+                url = "/spots/";
+                method = "POST";
+            }
+            Upload.upload({
+                method: method,
+                url: url,
+                data: {file: file, info: spot}
+            }).then(function (response) {
+                $scope.spots.push(response.data);
+            });
+        }
+
         $scope.clickEdit = function (spot) {
-            $scope.showAddDialog(spot).then(function (spot) {
-                if (spot) {
-                    $scope.addOrUpdateSpot(spot);
+            $scope.showAddDialog(spot).then(function (data) {
+                if (data.file) {
+                    upload(data.file, data.spot);
+                } else {
+                    $scope.addOrUpdateSpot(data.spot);
                 }
             });
         };
@@ -81,9 +102,15 @@ app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDia
                 $mdDialog.cancel();
             };
 
-            $scope.result = function (spot) {
-                $mdDialog.hide(spot);
+            $scope.result = function (file, spot) {
+                $mdDialog.hide({file: file, spot: spot});
             };
+
+            // $scope.submitImage = function (file, spot) {
+            //     upload(file, spot);
+            // };
+
+
         }
 
         // Interact with the server

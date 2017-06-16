@@ -11,7 +11,7 @@ app.use(morgan("dev"));
 app.use(bodyParser.json());
 
 
-mongoose.connect("mongodb://localhost/locations", function (err) {
+mongoose.connect("mongodb://localhost/spots", function (err) {
     if (err) {
         throw err;
     }
@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 
 app.use("/spots", require("./routes/spotRoutes.js"));
 app.use(express.static(path.join(__dirname, "public")));
-
+app.use(express.static(path.join(__dirname, "uploads")));
 
 app.listen(port, function () {
     console.log("Listening on port " + port);
