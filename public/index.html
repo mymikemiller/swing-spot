@@ -21,13 +21,21 @@
 
                 <info-window id="marker-iw">
                     <div ng-non-bindable="">
-                        <h1>{{spot.name}}</h1>
-                        <h3>Swings: {{spot.numSwings}}</h3>
-                        <img ng-src={{spot.image}}>
-                        <button id="editSpot" type="button" ng-click="clickEdit(spot)">Edit This Swing Set</button>
-                        <button id="deleteSpot" type="button" ng-click="clickDelete(spot)">Delete This Swing Set
-                        </button>
+                        <div id="infoContainer">
+                            <img id="swingImage" ng-src={{spot.image}}>
+                            <div id="infoRightContainer">
+                                <div style="flex-grow: 1">
+                                    <h1>{{spot.name}}</h1>
+                                    <h5>({{spot.numSwings}} swing{{spot.numSwings > 1 ? "s" : ""}})</h5>
+                                </div>
 
+
+                                <div>
+                                    <a href ng-click="clickEdit(spot)">Edit</a>
+                                    <a href ng-click="clickDelete(spot)">Delete</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </info-window>
 

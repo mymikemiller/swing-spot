@@ -29,3 +29,21 @@
     background-color: white;
     color: black;
 }
+
+#infoContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+#infoRightContainer {
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+    text-align: center;
+}
+
+#swingImage {
+    width: 150px;
+    height: auto;
+    align-self: center
+}
