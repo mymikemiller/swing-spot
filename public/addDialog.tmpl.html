@@ -19,21 +19,14 @@
                     <input ng-model="spot.numSwings" type="number">
                 </md-input-container>
             </div>
+            <div id="editImageContainer">
 
-            <md-button href="#" target="_blank" md-autofocus>
-                Add a picture
-            </md-button>
+                <md-button type="file" ngf-select ng-model="file" md-autofocus>
+                    Edit picture
+                </md-button>
 
-            <label for="image">Image: </label>
-            <input type="file"
-                   ngf-select
-                   ng-model="file"
-                   name="file"
-                   id="image">
-            <!--<button type="submit" ng-click="submitImage(file, spot)" class="btn btn-primary">Submit</button>-->
-            <img ngf-thumbnail="file" class="thumbnail" style="max-width: 500px; height: auto">
-
-            <img ng-src="{{spot.image}}" alt="{{user.name}}">
+                <img class="swingImage" ngf-thumbnail="file" class="thumbnail" -->
+            </div>
 
 
         </md-dialog-content>

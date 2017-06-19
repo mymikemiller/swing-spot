@@ -2,59 +2,74 @@
 <html ng-app="swingSpotApp">
 <head>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body ng-controller="MainController">
 
-<div id="wrapper">
-    <div id="map">
-        <div id="ng-map" map-lazy-load="https://maps.google.com/maps/api/js"
-             map-lazy-load-params="{{googleMapsUrl}}">
-            <ng-map center="41,-87" zoom="3" on-click="mapClicked()" style="height: 100%" default-style="false">
+<div class="bodyContainer">
+    <div id="wrapper">
+        <div id="map">
+            <div id="ng-map" map-lazy-load="https://maps.google.com/maps/api/js"
+                 map-lazy-load-params="{{googleMapsUrl}}">
+                <ng-map center="41,-87" zoom="3" on-click="mapClicked()" style="height: 100%" default-style="false">
 
-                <marker id="{{spot._id}}"
-                        ng-repeat="spot in spots track by spot._id"
-                        position="[{{spot.coordinate.latitude}},{{spot.coordinate.longitude}}]"
-                        on-click='markerClicked(spot)'>
-                </marker>
-
-
-                <info-window id="marker-iw">
-                    <div ng-non-bindable="">
-                        <div id="infoContainer">
-                            <img id="swingImage" ng-src={{spot.image}}>
-                            <div id="infoRightContainer">
-                                <div style="flex-grow: 1">
-                                    <h1>{{spot.name}}</h1>
-                                    <h5>({{spot.numSwings}} swing{{spot.numSwings > 1 ? "s" : ""}})</h5>
-                                </div>
+                    <marker id="{{spot._id}}"
+                            ng-repeat="spot in spots track by spot._id"
+                            position="[{{spot.coordinate.latitude}},{{spot.coordinate.longitude}}]"
+                            on-click='markerClicked(spot)'>
+                    </marker>
 
 
-                                <div>
-                                    <a href ng-click="clickEdit(spot)">Edit</a>
-                                    <a href ng-click="clickDelete(spot)">Delete</a>
+                    <info-window id="marker-iw">
+                        <div ng-non-bindable="">
+                            <div id="infoContainer">
+                                <img class="swingImage" ng-src={{spot.image}}>
+                                <div id="infoRightContainer">
+                                    <div style="flex-grow: 1">
+                                        <h1>{{spot.name}}</h1>
+                                        <h5>({{spot.numSwings}} swing{{spot.numSwings > 1 ? "s" : ""}})</h5>
+                                    </div>
+
+
+                                    <div>
+                                        <a href ng-click="clickEdit(spot)">Edit</a>
+                                        <a href ng-click="clickDelete(spot)">Delete</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </info-window>
+                    </info-window>
 
-            </ng-map>
+                </ng-map>
+            </div>
+        </div>
+
+        <div id="over_map">
+            <div id="floating-panel">
+                <input ng-click="clickAddSpotModeButton();" type=button value="Add a Swing Set"
+                       ng-class="{ 'modeEnabled': addSpotMode, 'modeDisabled': !addSpotMode }">
+            </div>
         </div>
     </div>
 
-    <div id="over_map">
-        <div id="floating-panel">
-            <input ng-click="clickAddSpotModeButton();" type=button value="Add a Swing Set"
-                   ng-class="{ 'modeEnabled': addSpotMode, 'modeDisabled': !addSpotMode }">
-        </div>
-    </div>
 </div>
+
+<footer class="footer">
+    <div class="text-center footerVerticalCenter">
+        <span class="text-on-black text-center align-middle">Swing Spot | Michael J. Miller | <a
+                href="mailto: mikem.exe@gmail.com">mikem.exe@gmail.com</a></span>
+    </div>
+</footer>
+
 
 <script
         src="https://code.jquery.com/jquery-3.2.1.min.js"
         integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
         crossorigin="anonymous"></script>
+
+<!-- Bootstrap -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <!-- Angular Material requires Angular.js Libraries -->
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.js"></script>
