@@ -9,6 +9,11 @@ var port = process.env.PORT || 7700;
 
 app.use(morgan("dev"));
 app.use(bodyParser.json());
+app.use(function (req, res, next) {
+    console.log("First req.body:");
+    console.log(req.body);
+    next();
+});
 
 
 mongoose.connect("mongodb://localhost/spots", function (err) {

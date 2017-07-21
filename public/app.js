@@ -1,5 +1,4 @@
 var app = angular.module("swingSpotApp", ['ngMap', "ngGeolocation", "ngMaterial", "ngFileUpload"]);
-//var scope;
 
 app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDialog", "Upload",
     function ($scope, SpotService, MapService, $mdDialog, Upload) {
@@ -28,15 +27,17 @@ app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDia
         $scope.mapClicked = function (e) {
             if ($scope.addSpotMode) {
 
-                console.log("click during add: " + e);
+                // console.log("click during add: " + e);
 
                 $scope.showAddDialog()
                     .then(function (data) {
+                        // console.log("showAddDialog's spot");
+                        // console.log(data);
                         data.spot.coordinate = {
                             latitude: parseFloat(e.latLng.lat().toFixed(6)),
                             longitude: parseFloat(e.latLng.lng().toFixed(6))
                         }
-                        return SpotService.addSpot(data)
+                        return SpotService.addSpot(data);
                     })
                     .then(function (response) {
                         $scope.spots.push(response.data);
@@ -45,18 +46,44 @@ app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDia
         };
 
         $scope.clickEdit = function (spot) {
-            $scope.showAddDialog(spot)
+
+
+            var newSpot = angular.copy(spot);
+            // var newSpot = {
+            //     coordinate: {
+            //         latitude: spot.coordinate.latitude,
+            //         longitude: spot.coordinate.longitude
+            //     },
+            //     name: spot.name,
+            //     numSwings: spot.numSwings,
+            //     image: spot.image,
+            //     _id: spot._id
+            // };
+
+            // console.log("newSpot:");
+            // console.log(newSpot);
+
+            $scope.showAddDialog(newSpot)
                 .then(function (data) {
-                    console.log(data);
-                    return SpotService.updateSpot(data)
+                    // console.log("data");
+                    console.log(data.spot);
+                    return SpotService.updateSpot(data);
                 })
-                .then(function (response) {
+                .then(function (spot) {
+                    // console.log("searching for spot to update");
+                    console.log(spot);
                     for (var i = 0; i < $scope.spots.length; i++) {
-                        if ($scope.spots[i]._id == response.data._id) {
-                            $scope.spots.splice(i, 1, response.data);
+                        if ($scope.spots[i]._id == spot._id) {
+                            // console.log()
+                            // console.log("found spot after showAddDialog");
+                            // console.log("$scope.spots[" + i + "]");
+                            // console.log($scope.spots[i]);
+                            $scope.spots.splice(i, 1, spot);
+                            $scope.markerClicked(null, spot);
                             break;
                         }
                     }
+                    return spot;
                 });
         };
 
@@ -70,7 +97,7 @@ app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDia
         };
 
         $scope.showAddDialog = function (spot) {
-            console.log("Showing dialog. Spot = " + JSON.stringify(spot));
+            // console.log("Showing dialog. Spot = " + JSON.stringify(spot));
             return $mdDialog.show({
                 locals: {dataToPass: spot},
                 controller: DialogController,
@@ -78,6 +105,10 @@ app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDia
                 parent: angular.element(document.body),
                 clickOutsideToClose: true,
                 fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
+            }).then(function (response) {
+                // console.log("response");
+                // console.log(response);
+                return response;
             })
         };
 
@@ -88,16 +119,21 @@ app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDia
             };
 
             $scope.cancel = function () {
-                $mdDialog.cancel();
+                $mdDialog.cancel().then(function (response) {
+                    // console.log("then");
+                    // console.log(response);
+                });
             };
 
             $scope.add = function (file, spot) {
-                console.log(spot);
+                console.log("File:");
+                console.log(file);
+                // console.log(spot);
                 $mdDialog.hide({file: file, spot: spot});
             };
         }
 
-        // Interact with the server
+// Interact with the server
         $scope.deleteSpot = function (spot) {
             console.log("deleting spot");
             SpotService.deleteSpot(spot._id).then(function (response) {
@@ -109,7 +145,8 @@ app.controller("MainController", ["$scope", "SpotService", "MapService", "$mdDia
                 }
             });
         };
-    }]);
+    }])
+;
 
 
 

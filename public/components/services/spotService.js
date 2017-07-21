@@ -29,11 +29,19 @@ app.service("SpotService", ["$http", "Upload", function ($http, Upload) {
         });
     };
     this.updateSpot = function (data) {
-        console.log(data);
+        // console.log("udpateSpot");
+        // console.log(spot);
+        // var uploadResult = ;
         return Upload.upload({
             method: "PUT",
             url: "/spots/" + data.spot._id,
             data: data
+        }).then(function (result) {
+            // console.log("result: ");
+            // console.log(result);
+            // console.log("spot after result: ");
+            // console.log(spot);
+            return result.data;
         });
     }
 }]);

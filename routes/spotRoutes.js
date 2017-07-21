@@ -54,12 +54,12 @@ spotRoutes.route("/:id")
         if (req.file) {
             req.body.spot.image = req.file.filename;
         }
-        console.log("req.body.spot:");
-        console.log(typeof req.body.spot);
+        // console.log("req.body.spot:");
+        // console.log(req.body.spot);
         Spot.findByIdAndUpdate(req.params.id, req.body.spot, {new: true}, function (err, updatedSpot) {
             if (err) console.log(err);
             if (err) return res.status(500).send(err);
-            // console.log("sending after update " + JSON.stringify(updatedSpot));
+            // console.log(updatedSpot);
             return res.send(updatedSpot);
         })
     })
