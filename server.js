@@ -16,7 +16,7 @@ app.use(function (req, res, next) {
 });
 
 
-mongoose.connect("mongodb://localhost/spots", function (err) {
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/spots", function (err) {
     if (err) {
         throw err;
     }
